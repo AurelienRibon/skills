@@ -36,7 +36,9 @@ function parseArgs(args) {
       if (VALID_SIZES.includes(size)) {
         options.size = size;
       } else {
-        console.error(`Invalid size: ${size}. Valid: ${VALID_SIZES.join(", ")}`);
+        console.error(
+          `Invalid size: ${size}. Valid: ${VALID_SIZES.join(", ")}`,
+        );
         process.exit(1);
       }
     } else if (arg.startsWith("--ratio=")) {
@@ -44,7 +46,9 @@ function parseArgs(args) {
       if (VALID_RATIOS.includes(ratio)) {
         options.ratio = ratio;
       } else {
-        console.error(`Invalid ratio: ${ratio}. Valid: ${VALID_RATIOS.join(", ")}`);
+        console.error(
+          `Invalid ratio: ${ratio}. Valid: ${VALID_RATIOS.join(", ")}`,
+        );
         process.exit(1);
       }
     } else if (arg.startsWith("--ref=")) {
@@ -93,23 +97,31 @@ async function main() {
 
   const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    console.error("Error: GOOGLE_API_KEY or GEMINI_API_KEY environment variable is required");
+    console.error(
+      "Error: GOOGLE_API_KEY or GEMINI_API_KEY environment variable is required",
+    );
     process.exit(1);
   }
 
   // Warn if size/ratio used without --pro
   if (!options.pro && (options.size !== "1K" || options.ratio)) {
-    console.warn("Warning: --size and --ratio options only work with --pro model. Ignoring.");
+    console.warn(
+      "Warning: --size and --ratio options only work with --pro model. Ignoring.",
+    );
   }
 
-  const model = options.pro ? "gemini-3-pro-image-preview" : "gemini-2.5-flash-image";
+  const model = options.pro
+    ? "gemini-3-pro-image-preview"
+    : "gemini-2.5-flash-image";
   const modelLabel = options.pro ? "Nano Banana Pro" : "Nano Banana";
 
   const ai = new GoogleGenAI({ apiKey });
 
   console.log(`Model: ${modelLabel} (${model})`);
   if (options.pro) {
-    console.log(`Size: ${options.size}${options.ratio ? `, Ratio: ${options.ratio}` : ""}`);
+    console.log(
+      `Size: ${options.size}${options.ratio ? `, Ratio: ${options.ratio}` : ""}`,
+    );
   }
   if (options.refImages.length > 0) {
     console.log(`Reference images: ${options.refImages.length}`);
@@ -148,11 +160,17 @@ async function main() {
     contents = options.prompt;
   }
 
-  const response = await ai.models.generateContent({
-    model,
-    contents,
-    config,
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 60000);
+
+  config.abortSignal = controller.signal;
+
+  let response;
+  try {
+    response = await ai.models.generateContent({ model, contents, config });
+  } finally {
+    clearTimeout(timeout);
+  }
 
   // Ensure output directory exists
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
