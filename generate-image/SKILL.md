@@ -7,7 +7,7 @@ Generate or edit images using the Nano Banana (Google Gemini) API.
 
 ## Models
 
-- **Nano Banana** (default): gemini-2.5-flash-image - Fast generation
+- **Nano Banana 2** (default): gemini-3.1-flash-image-preview - Fast generation
 - **Nano Banana Pro**: gemini-3-pro-image-preview - Higher quality
 
 ## Options
@@ -15,21 +15,21 @@ Generate or edit images using the Nano Banana (Google Gemini) API.
 | Option | Values | Default | Description |
 |--------|--------|---------|-------------|
 | `--pro` | - | off | Use Nano Banana Pro model |
-| `--size` | 1K, 2K, 4K | 1K | Image resolution |
-| `--ratio` | 16:9, 9:16, 4:3, 3:4, 5:4, 4:5, 1:1 | auto | Aspect ratio |
+| `--size` | 512px, 1K, 2K, 4K | 1K | Image resolution |
+| `--ratio` | 1:1, 1:4, 1:8, 2:3, 3:2, 3:4, 4:1, 4:3, 4:5, 5:4, 8:1, 9:16, 16:9, 21:9 | auto | Aspect ratio |
 | `--ref` | path | - | Reference image(s) for editing (can be repeated) |
 
 ### Aspect Ratios
 
-- **Landscape**: 16:9, 4:3, 5:4
-- **Portrait**: 9:16, 3:4, 4:5
+- **Landscape**: 16:9, 21:9, 4:3, 3:2, 5:4, 4:1, 8:1
+- **Portrait**: 9:16, 3:4, 2:3, 4:5, 1:4, 1:8
 - **Square**: 1:1
 
 ## Instructions
 
 1. Parse the user's request to determine:
    - The image prompt/description
-   - Whether they want Pro quality (look for "pro", "high quality", "meilleure qualité")
+   - Whether they want Pro quality (look for "pro", "high quality", "best quality", "meilleure qualité")
    - Desired resolution (look for "1K", "2K", "4K", "haute résolution", "high res")
    - Desired aspect ratio (look for "paysage/landscape", "portrait", "carré/square", "16:9", etc.)
    - Reference images for editing (if user provides image paths or wants to modify existing images)
@@ -46,6 +46,9 @@ Generate or edit images using the Nano Banana (Google Gemini) API.
 
    # Landscape 2K
    node ~/.claude/skills/generate-image/generate-image.mjs --size=2K --ratio=16:9 "Mountain landscape"
+
+   # Ultra-wide cinematic
+   node ~/.claude/skills/generate-image/generate-image.mjs --size=4K --ratio=21:9 "Cinematic sci-fi landscape"
 
    # Portrait 4K with Pro
    node ~/.claude/skills/generate-image/generate-image.mjs --pro --size=4K --ratio=9:16 "Fashion portrait"

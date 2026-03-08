@@ -4,8 +4,11 @@ import * as path from "node:path";
 import * as os from "node:os";
 
 const OUTPUT_DIR = path.join(os.homedir(), "Downloads", "Banana");
-const VALID_SIZES = ["1K", "2K", "4K"];
-const VALID_RATIOS = ["16:9", "9:16", "4:3", "3:4", "5:4", "4:5", "1:1"];
+const VALID_SIZES = ["512px", "1K", "2K", "4K"];
+const VALID_RATIOS = [
+  "1:1", "1:4", "1:8", "2:3", "3:2", "3:4",
+  "4:1", "4:3", "4:5", "5:4", "8:1", "9:16", "16:9", "21:9",
+];
 
 function getMimeType(filePath) {
   const ext = path.extname(filePath).toLowerCase();
@@ -32,7 +35,8 @@ function parseArgs(args) {
     if (arg === "--pro") {
       options.pro = true;
     } else if (arg.startsWith("--size=")) {
-      const size = arg.slice(7).toUpperCase();
+      const raw = arg.slice(7);
+      const size = raw.toLowerCase() === "512px" ? "512px" : raw.toUpperCase();
       if (VALID_SIZES.includes(size)) {
         options.size = size;
       } else {
@@ -72,16 +76,15 @@ function printUsage() {
 
 Options:
   --pro           Use Nano Banana Pro (gemini-3-pro-image-preview)
-                  Default: Nano Banana (gemini-2.5-flash-image)
-  --size=SIZE     Image resolution: 1K, 2K, 4K (default: 1K) [Pro only]
-  --ratio=RATIO   Aspect ratio: 16:9, 9:16, 4:3, 3:4, 5:4, 4:5, 1:1 [Pro only]
+                  Default: Nano Banana 2 (gemini-3.1-flash-image-preview)
+  --size=SIZE     Image resolution: 512px, 1K, 2K, 4K (default: 1K)
+  --ratio=RATIO   Aspect ratio: 1:1, 1:4, 1:8, 2:3, 3:2, 3:4, 4:1, 4:3, 4:5, 5:4, 8:1, 9:16, 16:9, 21:9
   --ref=PATH      Reference image for editing (can be used multiple times)
-
-Note: --size and --ratio options only work with --pro model.
 
 Examples:
   node generate-image.mjs "A cat playing piano"
-  node generate-image.mjs --pro --size=2K --ratio=16:9 "A mountain landscape"
+  node generate-image.mjs --size=2K --ratio=16:9 "A mountain landscape"
+  node generate-image.mjs --pro --size=4K --ratio=9:16 "Fashion portrait"
   node generate-image.mjs --ref=photo.jpg "Make them smile"
   node generate-image.mjs --pro --ref=img1.jpg --ref=img2.jpg "Combine these into a collage"`);
 }
@@ -103,43 +106,31 @@ async function main() {
     process.exit(1);
   }
 
-  // Warn if size/ratio used without --pro
-  if (!options.pro && (options.size !== "1K" || options.ratio)) {
-    console.warn(
-      "Warning: --size and --ratio options only work with --pro model. Ignoring.",
-    );
-  }
-
   const model = options.pro
     ? "gemini-3-pro-image-preview"
-    : "gemini-2.5-flash-image";
-  const modelLabel = options.pro ? "Nano Banana Pro" : "Nano Banana";
+    : "gemini-3.1-flash-image-preview";
+  const modelLabel = options.pro ? "Nano Banana Pro" : "Nano Banana 2";
 
   const ai = new GoogleGenAI({ apiKey });
 
   console.log(`Model: ${modelLabel} (${model})`);
-  if (options.pro) {
-    console.log(
-      `Size: ${options.size}${options.ratio ? `, Ratio: ${options.ratio}` : ""}`,
-    );
-  }
+  console.log(
+    `Size: ${options.size}${options.ratio ? `, Ratio: ${options.ratio}` : ""}`,
+  );
   if (options.refImages.length > 0) {
     console.log(`Reference images: ${options.refImages.length}`);
   }
   console.log(`Prompt: "${options.prompt}"`);
 
-  // Build config - imageConfig only for Pro model
   const config = {
     responseModalities: ["TEXT", "IMAGE"],
+    imageConfig: {
+      imageSize: options.size,
+    },
   };
 
-  if (options.pro) {
-    config.imageConfig = {
-      imageSize: options.size,
-    };
-    if (options.ratio) {
-      config.imageConfig.aspectRatio = options.ratio;
-    }
+  if (options.ratio) {
+    config.imageConfig.aspectRatio = options.ratio;
   }
 
   // Build contents - simple string for text-only, array with images for editing
