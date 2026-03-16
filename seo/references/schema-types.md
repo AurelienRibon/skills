@@ -2,7 +2,20 @@
 
 Reference for JSON-LD structured data validation and generation.
 
-## Active Types (Google Rich Results)
+## Contents
+
+- Common types for this skill
+- Restricted types
+- Search feature changes vs Schema.org validity
+- Recent additions
+- Validation rules
+- Common mistakes
+- Type selection guide
+
+## Common Types This Skill Can Validate or Generate
+
+This is a working registry for common website SEO use cases. It is not a complete
+Schema.org catalog, and absence from this list does not make a type invalid.
 
 | Type | Required Properties | Recommended Properties |
 |---|---|---|
@@ -37,19 +50,20 @@ Reference for JSON-LD structured data validation and generation.
 |---|---|---|
 | FAQPage | Government and healthcare authority sites only. Still provides AI search value on other sites but no Google rich results. | August 2023 |
 
-## Deprecated Types -- NEVER implement
+## Search Feature Changes -- Do Not Treat As Schema.org Deprecations
 
-| Type | Deprecated Since |
+These types still exist in Schema.org. Changes here refer to Google Search feature support,
+eligibility, or presentation changes, not removal from Schema.org itself.
+
+| Type | Status |
 |---|---|
-| HowTo | September 2023 |
-| SpecialAnnouncement | July 2025 |
-| CourseInfo | 2024 |
-| EstimatedSalary | 2024 |
-| LearningVideo | 2024 |
-| ClaimReview | 2025 |
-| VehicleListing | 2025 |
-| Practice Problem | 2024 |
-| Dataset | 2025 |
+| HowTo | Valid Schema.org type. Google reduced HowTo rich result visibility in 2023. |
+| FAQPage | Valid Schema.org type. Google restricts FAQ rich results to limited site classes. |
+| ClaimReview | Valid Schema.org type. Use when the content genuinely supports fact-check markup requirements. |
+| Dataset | Valid Schema.org type. Google still documents dataset structured data. |
+| SpecialAnnouncement | Valid Schema.org type. Only use when it matches the page content and supported consumers. |
+
+Avoid calling a type "deprecated" unless Schema.org itself marks it deprecated.
 
 ## Recent Additions (2024-2026)
 
@@ -62,15 +76,18 @@ Reference for JSON-LD structured data validation and generation.
 
 ### Required checks
 
-1. `@context` must be exactly `"https://schema.org"` (HTTPS, no trailing slash)
-2. `@type` must match an active type (case-sensitive)
+1. `@context` should use the Schema.org HTTPS context. Accept both
+   `"https://schema.org"` and `"https://schema.org/"`
+2. `@type` must be a valid Schema.org type. If the type is not in this file, check
+   whether it is valid before flagging it
 3. All required properties for the type must be present
 4. No placeholder text: scan for "Lorem", "TODO", "CHANGE", "example.com", "xxx"
 5. All URLs must be absolute (start with `https://`)
 6. All dates must be ISO 8601: `YYYY-MM-DD` or `YYYY-MM-DDTHH:MM:SS+00:00`
 7. Image URLs must be absolute and valid
-8. `price` must be a string number (e.g., `"9.99"` not `9.99`), always paired with `priceCurrency`
-9. Nested `@type` objects must also be valid active types
+8. `price` may be a number or text, but keep the representation consistent and pair it
+   with `priceCurrency` when used in offers
+9. Nested `@type` objects must also be valid types
 10. `applicationCategory` for WebApplication/SoftwareApplication should use Google's values:
     - BusinessApplication, DesignApplication, DeveloperApplication, EducationApplication,
       EntertainmentApplication, FinanceApplication, GameApplication, HealthApplication,
@@ -79,7 +96,7 @@ Reference for JSON-LD structured data validation and generation.
 ### Common mistakes
 
 - Using `http://schema.org` instead of `https://schema.org`
-- Using deprecated types (especially HowTo -- very common)
+- Treating Google Search feature changes as Schema.org deprecations
 - Relative URLs in `url`, `image`, `logo` fields
 - Missing `@type` on nested objects (e.g., an `author` without `"@type": "Person"`)
 - Using `FAQPage` on a non-government/healthcare site expecting rich results

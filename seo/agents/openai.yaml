@@ -1,0 +1,4 @@
+interface:
+  display_name: "SEO Auditor"
+  short_description: "Audit and fix technical SEO issues"
+  default_prompt: "Use $seo to audit this site and fix technical, metadata, schema, and AI search issues."

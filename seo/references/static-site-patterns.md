@@ -2,6 +2,15 @@
 
 Vite + Vercel deployment patterns for SEO files.
 
+## Contents
+
+- File locations
+- `robots.txt` template
+- `sitemap.xml` template
+- `llms.txt` template
+- Vercel security headers
+- SPA SEO considerations
+
 ## File Locations
 
 | File | Location | Notes |
@@ -30,7 +39,10 @@ Allow: /
 User-agent: OAI-SearchBot
 Allow: /
 
-User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
 Allow: /
 
 User-agent: PerplexityBot
@@ -61,6 +73,9 @@ Notes:
 - Max 50,000 URLs per sitemap file (split if needed)
 
 ## llms.txt Template
+
+`llms.txt` is an optional, emerging convention. Treat it as a helpful supplemental file, not a
+core technical SEO requirement.
 
 ```
 # [App Name]
@@ -107,8 +122,9 @@ Notes:
 
 ### Content must be in initial HTML
 
-For static sites without SSR, search engines and AI crawlers see only the initial HTML.
-All SEO-critical content must be present in `index.html`, not injected by JavaScript:
+Some crawlers only use the initial HTML, while Google Search can render JavaScript.
+For reliability across crawlers, SEO-critical content should be available in server-rendered,
+pre-rendered, or initial HTML whenever possible:
 - `<title>`, meta tags, JSON-LD -- must be in HTML source
 - Heading tags (`<h1>` etc.) -- should be in HTML if they contain key SEO text
 - AI crawlers may not execute JavaScript at all

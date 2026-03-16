@@ -2,15 +2,26 @@
 
 Generative Engine Optimization: making content citable by AI search platforms.
 
+## Contents
+
+- AI crawlers
+- Recommended `robots.txt`
+- `llms.txt` proposal
+- Citability criteria
+- E-E-A-T review framework
+- Evidence handling
+
 ## AI Crawlers
 
 | Crawler | Platform | robots.txt Token | Purpose |
 |---|---|---|---|
-| GPTBot | OpenAI | GPTBot | Training data (blocking does NOT prevent ChatGPT search citations) |
-| OAI-SearchBot | ChatGPT Search | OAI-SearchBot | Controls ChatGPT search results |
-| ClaudeBot | Anthropic | ClaudeBot | Training + search |
-| PerplexityBot | Perplexity | PerplexityBot | Search results |
-| Google-Extended | Google AI | Google-Extended | AI training (blocking does NOT affect Google Search) |
+| GPTBot | OpenAI | GPTBot | Training crawl. Blocking it does not by itself remove ChatGPT search citations. |
+| OAI-SearchBot | OpenAI | OAI-SearchBot | Search crawler for ChatGPT search results. |
+| ClaudeBot | Anthropic | ClaudeBot | Training crawl for model improvement. |
+| Claude-SearchBot | Anthropic | Claude-SearchBot | Search crawler for Claude web search features. |
+| Claude-User | Anthropic | Claude-User | User-triggered fetches from Claude sessions. |
+| PerplexityBot | Perplexity | PerplexityBot | Search and retrieval crawler. |
+| Google-Extended | Google | Google-Extended | Controls use by certain Google Gemini and Vertex AI features, not Google Search ranking. |
 | CCBot | Common Crawl | CCBot | General training data |
 
 ### Recommended robots.txt for AI visibility
@@ -20,7 +31,10 @@ Generative Engine Optimization: making content citable by AI search platforms.
 User-agent: OAI-SearchBot
 Allow: /
 
-User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
 Allow: /
 
 User-agent: PerplexityBot
@@ -37,10 +51,10 @@ User-agent: Google-Extended
 Disallow: /
 ```
 
-## llms.txt Standard
+## llms.txt Proposal
 
 Location: `/public/llms.txt` (served at site root).
-Purpose: help LLMs understand site structure and key content.
+Purpose: an optional, emerging convention to summarize site structure and key content for LLMs.
 
 ### Format
 
@@ -67,17 +81,18 @@ Purpose: help LLMs understand site structure and key content.
 - Lead with the most important pages
 - Include specific, quotable facts (numbers, dates, features)
 - Update when content changes significantly
+- Do not treat absence of `llms.txt` as a critical SEO failure by itself
 
 ## Citability Criteria
 
-Content with these characteristics is more likely to be cited by AI:
+Content with these characteristics is often easier for AI systems to extract, quote, and summarize:
 
-### 1. Self-contained answer blocks (134-167 words)
+### 1. Self-contained answer blocks
 
 A paragraph that fully answers a question without needing external context.
 Structure: definition/answer first, then supporting details, then specific example.
 
-### 2. Quotable opening (first 40-60 words)
+### 2. Quotable opening
 
 The first 2-3 sentences of a section should contain:
 - Specific numbers, percentages, or dates
@@ -94,8 +109,8 @@ Use `<h2>` and `<h3>` that match natural language queries:
 
 ### 4. Structured data presence
 
-Content with proper JSON-LD schema has ~2.5x higher chance of appearing in AI answers.
-Prioritize: Organization, WebApplication/Product, Article schemas.
+Structured data can make entities, authors, products, and page purpose easier to interpret.
+Prioritize types that match the actual content: Organization, WebApplication/Product, Article, Person.
 
 ### 5. Data tables and comparison lists
 
@@ -110,17 +125,16 @@ Prioritize: Organization, WebApplication/Product, Article schemas.
 - Include `datePublished` and `dateModified` in schema
 - Link author profiles via `sameAs` to social/professional profiles
 
-## E-E-A-T Framework (December 2025 Update)
+## E-E-A-T Review Framework
 
-Now applies to ALL competitive queries, not just YMYL (Your Money Your Life).
-Sites without E-E-A-T signals have seen 40-70% traffic drops post-update.
+Use E-E-A-T as a qualitative review framework, not a scoring formula.
 
 | Factor | Weight | Source code signals to check |
 |---|---|---|
-| Trustworthiness | 30% | HTTPS everywhere, contact info visible, privacy policy link, clear attribution, no deceptive patterns |
-| Expertise | 25% | Author credentials displayed, technical accuracy, proper terminology, depth of content |
-| Authoritativeness | 25% | `sameAs` links in schema (LinkedIn, GitHub, etc.), external citations, industry recognition |
-| Experience | 20% | Original images/screenshots, case studies, specific anecdotes, unique first-party data |
+| Trustworthiness | Qualitative | HTTPS everywhere, contact info visible, privacy policy link, clear attribution, no deceptive patterns |
+| Expertise | Qualitative | Author credentials displayed, technical accuracy, proper terminology, depth of content |
+| Authoritativeness | Qualitative | `sameAs` links in schema (LinkedIn, GitHub, etc.), external citations, industry recognition |
+| Experience | Qualitative | Original images/screenshots, case studies, specific anecdotes, unique first-party data |
 
 ### Code-level E-E-A-T checks
 
@@ -131,10 +145,7 @@ Sites without E-E-A-T signals have seen 40-70% traffic drops post-update.
 5. About page with team/company credentials
 6. HTTPS on all internal and external links
 
-## Key Statistics
+## Evidence Handling
 
-- Brand mentions correlate 3x more with AI visibility than backlinks
-- Only 11% of domains get citations across both ChatGPT and Google AI Overviews for the same query
-- 92% of AI Overview citations come from top-10 ranking pages
-- Multi-modal content (images, video, tables) increases AI selection by 156%
-- Content with schema markup has ~2.5x higher AI citation probability
+Do not present precise GEO uplift percentages, citation multipliers, or universal weighting models
+unless the current task includes a verifiable source for them.

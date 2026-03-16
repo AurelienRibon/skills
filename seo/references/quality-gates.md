@@ -1,18 +1,33 @@
 # Quality Gates
 
-Numerical thresholds for SEO checks. All values reflect current Google standards.
+Recommended heuristics for source-code SEO audits.
+
+## Contents
+
+- Meta tag thresholds
+- Required meta tags
+- Content word count heuristics
+- Image optimization
+- Core Web Vitals
+- Heading hierarchy
+- Readability targets
+- Internal linking
+
+Treat these values as review guidance, not as hard Google requirements. When evaluating a page,
+separate objective failures (missing tags, broken canonicals, invalid markup, render-blocking
+mistakes) from editorial heuristics (copy length, phrasing, word count, readability).
 
 ## Meta Tag Thresholds
 
 | Element | Min | Max | Notes |
 |---|---|---|---|
-| `<title>` | 30 chars | 60 chars | Primary keyword near start. Google truncates at ~60. |
-| `meta description` | 120 chars | 160 chars | Include value proposition or CTA. Google may rewrite if too short. |
+| `<title>` | 30 chars | 60 chars | Common display-oriented target, not a fixed Google limit. |
+| `meta description` | 120 chars | 160 chars | Common snippet-writing target, not a fixed Google limit. |
 | `og:title` | 30 chars | 60 chars | Can differ from `<title>` for social optimization. |
 | `og:description` | 100 chars | 160 chars | Compelling for social sharing. |
 | OG image | 1200x630px | -- | Minimum 600x315. Ratio 1.91:1. |
-| `alt` text | 10 chars | 125 chars | Descriptive, not filename. No keyword stuffing. |
-| `<h1>` text | 20 chars | 70 chars | One per page. Contains primary keyword. |
+| `alt` text | 10 chars | 125 chars | Common accessibility heuristic. Prioritize accuracy over length targets. |
+| `<h1>` text | 20 chars | 70 chars | Editorial heuristic only. Prioritize clarity over exact length. |
 
 ## Required Meta Tags Checklist
 
@@ -32,6 +47,8 @@ Numerical thresholds for SEO checks. All values reflect current Google standards
 - `<meta name="twitter:description">` -- Twitter description
 
 ## Content Word Count Minimums
+
+These are content-planning heuristics, not ranking guarantees.
 
 | Page Type | Minimum Words | Uniqueness Required |
 |---|---|---|
@@ -120,6 +137,8 @@ Use `<picture>` element with format fallbacks for critical images.
 - Primary keyword in `<h1>`, secondary keywords in `<h2>`s
 
 ## Readability Targets
+
+Use these as editorial prompts. Do not fail a page solely for missing a numeric readability target.
 
 | Metric | Target |
 |---|---|
