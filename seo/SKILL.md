@@ -23,7 +23,7 @@ Unlike browser audit tools, this skill reads and modifies source files directly.
 | `/seo schema` | Detect, validate, generate JSON-LD | `schema-types.md` |
 | `/seo images` | Alt text, lazy loading, formats, CLS prevention | `quality-gates.md` |
 | `/seo technical` | robots.txt, sitemap, canonical, security headers | `static-site-patterns.md` |
-| `/seo content` | Heading hierarchy, word count, E-E-A-T signals | `quality-gates.md` |
+| `/seo content` | Heading hierarchy, word count, E-E-A-T signals, GSC export if available | `quality-gates.md` |
 | `/seo geo` | AI search optimization, llms.txt, citability | `geo-checklist.md` |
 
 Default (no subcommand): run `/seo audit`.
@@ -233,6 +233,21 @@ Checks (thresholds in `quality-gates.md`):
    - Privacy policy link
 6. `sr-only` content (if used) is accurate and not keyword-stuffed
 7. Paragraph structure supports readability; use the reference targets as heuristics, not hard requirements
+
+### With a Search Console export
+
+The user usually has GSC data. When a CSV export (queries + pages, clicks, impressions, CTR,
+position) is provided or available, use it to prioritize instead of guessing:
+
+1. Queries at position 11-20 with meaningful impressions: the cheapest wins. For each, check the
+   ranking page's `<title>`, `<h1>`, first paragraph and meta description for the query, and
+   propose the exact replacement copy
+2. Pages with high impressions and low CTR: title and meta description problem, rewrite them
+3. One query ranking on the wrong page (cannibalization): pick the intended page, redirect
+   internal links to it
+4. Pages with zero queries: dead weight or a missing topic, ask the user which
+
+Report the GSC-backed findings first; they beat any heuristic in this file.
 
 --------------------------------------------------------------------------------
 
